@@ -6,13 +6,14 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import "tippy.js/dist/tippy.css";
 import "tippy.js/animations/scale.css";
 
 import Header from './../../components/Header';
 import qrcode from '../../assets/images/qrcode.png'
-import { IconButton } from './../../components/Button';
+import { IconButton, FormButton } from './../../components/Button';
 import { SlidePaper } from '../../components/Paper'
 import { neumorphism } from '../../styles/ui'
 import { socket } from './../../utils/socket';
@@ -32,6 +33,11 @@ const Content = () => {
     const goBack = () => {
         navigate(`/manager`)
     }
+    const resetSlide = () => {
+        if(window.confirm("리셋하시겠습니까?")){
+            socket.emit("resetSlide", {id: id})
+        }
+    }
 
     useEffect(() => {
         socket.on("getProject", (data) => {
@@ -43,6 +49,15 @@ const Content = () => {
         socket.on("getWords", (data) => {
             setWords(data.words)
         })
+        socket.on("resetSlide", (data) => {
+            if(data.success){
+                alert("리셋이 완료되었습니다.")
+                window.location.reload()
+            }else{
+                alert("리셋에 오류가 생겨 페이지가 새로고침 됩니다.")
+                window.location.reload()
+            }
+        })
         socket.emit("getProject", {admin: cookies.auth, id: id})
         socket.emit("joinRoom", {id: id})
         socket.emit("getWords", {id: id})
@@ -51,6 +66,7 @@ const Content = () => {
             socket.off("getProject")
             socket.off("sendWord")
             socket.off("getWords")
+            socket.off("resetSlide")
         }
         // eslint-disable-next-line
     }, []);
@@ -105,6 +121,13 @@ const Content = () => {
                         <ReactWordcloud words={words} size={size} options={{fontSizes:[30,50], fontFamily:"BMJUA"}}/>
                         <Box sx={{position:"absolute", right:0, bottom:0, transform:"translate(-50%, -50%)"}}>
                             <Typography>투표수 : {count}</Typography>
+                        </Box>
+                        <Box sx={{position:"absolute", left:10, bottom:10, transform:"translate(0%, 0%)"}}>
+                            <Tooltip title="리셋" arrow>
+                                <IconButton onClick={resetSlide}>
+                                    <DeleteForeverIcon/>
+                                </IconButton>
+                            </Tooltip>
                         </Box>
                     </Box>
                 </Box>
