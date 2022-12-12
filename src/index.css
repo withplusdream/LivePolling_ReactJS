@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
+.MuiDataGrid-root .MuiDataGrid-cell:focus {
+  outline: none !important;
+}
+.MuiDataGrid-cell--withRenderer:focus {
+  outline: none !important;
+}

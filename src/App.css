@@ -1,38 +1,37 @@
-.App {
-  text-align: center;
+*{
+    -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+    display: none;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+    font-family: 'BMJUA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+@font-face {
+    font-family: 'Noto Sans KR', sans-serif;
+    src: url('https://fonts.googleapis.com/earlyaccess/notosanskr.css');
+    font-weight: normal;
+    font-style: normal;
+}
+/* format('woff'); */
+
+a:visited { color:blue; text-decoration: none; }
+
+
+.MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
+.MuiDataGrid-root .MuiDataGrid-cell:focus {
+  outline: none !important;
+}
+.MuiDataGrid-cell--withRenderer:focus {
+  outline: none !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+fieldset{
+    border: none !important;
+    outline: none !important;
 }
