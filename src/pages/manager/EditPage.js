@@ -26,6 +26,8 @@ const Content = () => {
     const [selectedValue, setSelectedValue] = useState("default");
     const [question, setQuestion] = useState("");
     const [overlap, setOverlap] = useState(false);
+    const [submitCount, setSubmitCount] = useState(0);
+    const [inputCount, setInputCount] = useState(10);
 
     const goBack = () => {
         navigate("/manager")
@@ -40,9 +42,9 @@ const Content = () => {
         setOverlap(!overlap)
     }
     const modifyProject = () => {
-        setProject({...project, type:selectedValue, name:name, data: {question: question, overlap: overlap}})
+        setProject({...project, type:selectedValue, name:name, data: {question: question, overlap: overlap, submitCount:submitCount, inputCount: inputCount}})
         
-        socket.emit("modifyProject", {...project, name:name, type:selectedValue, data: {question: question, overlap: overlap}})
+        socket.emit("modifyProject", {...project, name:name, type:selectedValue, data: {question: question, overlap: overlap, submitCount: submitCount, inputCount: inputCount}})
     }
     const handleName = (e) => {
         if(e.target.value.length > 25){
@@ -50,6 +52,12 @@ const Content = () => {
         }else{
             setName(e.target.value)
         }
+    }
+    const handleSubmitCount = (e) => {
+        setSubmitCount(e.target.value)
+    }
+    const handleInputCount = (e) => {
+        setInputCount(e.target.value)
     }
 
     useEffect(() => {
@@ -67,8 +75,8 @@ const Content = () => {
                 alert("수정이 완료되었습니다.")
             }else {
                 alert("문제 수정에 오류가 생겨 리스트 페이지로 돌아갑니다.")
-                navigate("/manager")
             }
+            navigate("/manager")
         })
 
         socket.emit("getProject", {admin: cookies.auth, id: id})
@@ -86,8 +94,16 @@ const Content = () => {
             setQuestion(project.data.question)
             setOverlap(project.data.overlap)
             setName(project.name)
+            setInputCount(project.data.inputCount)
+            setSubmitCount(project.data.submitCount)
         }
     }, [project]);
+
+    useEffect(() => {
+        if(!overlap){
+            setSubmitCount(1)
+        }
+    }, [overlap]);
     return(
         <Box sx={{width:"80%", pb:3, pl:1, pr:3, pt:1, boxSizing:"border-box"}}>
             <EditPaper sx={{px:4, py:2}}>
@@ -109,7 +125,7 @@ const Content = () => {
 
                 <Box sx={{width:"100%", display:"flex", justifyContent:"center"}}>
                     <Box sx={neumorphism}>
-                        <Box sx={{width:"400px", p:2, boxSizing:"border-box", display:"inline-flex", flexFlow:"row wrap", alignContent: "space-around"}}>
+                        <Box sx={{width:"500px", p:2, boxSizing:"border-box", display:"inline-flex", flexFlow:"row wrap", alignContent: "space-around"}}>
                             <Grid container rowSpacing={2}>
                                 <Grid item xs={12}>
                                     <Box sx={{pt:2}}>
@@ -156,9 +172,39 @@ const Content = () => {
                                     </Box>
                                 </Grid> */}
                                 <Grid item xs={12}>
+                                    <Box sx={{display:"flex"}}>
+                                        <Box sx={{width:"50%", borderRight:1, borderColor:"#00000015"}}>
+                                            <Typography>중복 제출 가능 여부</Typography>
+                                            <Checkbox size="large" checked={overlap} onChange={handleCheck}/>
+                                        </Box>
+                                        <Box sx={{mx:1, width:"50%"}}>
+                                            <Typography> 입력 글자 수 제한 (10 ~ 25자 내외)</Typography>
+                                            <NeumorphismTextField
+                                                size="small" sx={{width:"75px"}} type="Number" value={inputCount}
+                                                onKeyPress={(e) => {
+                                                    e.preventDefault()
+                                                }}
+                                                InputProps={{
+                                                    inputProps: {min: 10, max: 25}
+                                                }}
+                                                onChange={handleInputCount}
+                                            />
+                                        </Box>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} sx={{display:overlap?"":"none"}}>
                                     <Box sx={{width:"100%"}}>
-                                        <Typography>중복 제출 가능 여부</Typography>
-                                        <Checkbox size="large" checked={overlap} onChange={handleCheck}/>
+                                        <Typography>최대 제출 가능 수 ( '0' 으로 설정 시 제출 무제한 가능 )</Typography>
+                                        <NeumorphismTextField 
+                                            size="small" sx={{width:"75px"}} type="Number" value={submitCount}
+                                            onKeyPress={(e) => {
+                                                e.preventDefault()
+                                            }}
+                                            InputProps={{
+                                                inputProps: {min: 0, max: 10}
+                                            }}
+                                            onChange={handleSubmitCount}
+                                        />
                                     </Box>
                                 </Grid>
                             </Grid>

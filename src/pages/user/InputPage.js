@@ -14,29 +14,40 @@ import { socket } from './../../utils/socket';
 const Content = () => {
     const id = useLocation().pathname.split('/')[1]
     const navigate = useNavigate()
-    const [cookies, setCookie] = useCookies()
+    let [cookies, setCookie] = useCookies([id])
 
     const [text, setText] = useState("");
     const [project, setProject] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [submitComplete, setSubmitComplete] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [inputCount, setInputCount] = useState(10);
+    const [submitCount, setSubmitCount] = useState(0);
+    const [update, setUpdate] = useState(false);
 
     const handleText = (e) => {
-        if(e.target.value.length > 10){
-            setText(e.target.value.slice(0, 10))
+        if(e.target.value.length > inputCount){
+            setText(e.target.value.slice(0, inputCount))
         }else{
             setText(e.target.value)
         }
     }
     const handleSubmit = (e) => {
         e.preventDefault()
+        if(text === "") return
         setIsSubmitted(false)
-        if(cookies[id]){
-            setIsSubmitted(true)
-        }else{
+        if(submitCount*1 === 0){
             socket.emit("submitAnswer", {id: id, text: text})
             setButtonDisabled(true)
+        }
+        else{
+            if(cookies[id]*1 >= submitCount){
+                setIsSubmitted(true)
+                setButtonDisabled(true)
+            }else{
+                socket.emit("submitAnswer", {id: id, text: text})
+                setButtonDisabled(true)
+            }
         }
     }
 
@@ -52,19 +63,29 @@ const Content = () => {
         })
         socket.on("submitAnswer", (data) => {
             setSubmitComplete(true)
-
-            if(!data.overlap){
-                setCookie(id, "test", {path:'/'})
-                setTimeout(() => {
-                    setSubmitComplete(false)
-                }, 2000);
+            if(cookies[id]){
+                let value = cookies[id]*1
+                setCookie(id, value+1, {path:'/'})
+            }else{
+                setCookie(id, 1, {path:'/'})
             }
-            else{
-                setTimeout(() => {
-                    setSubmitComplete(false)
-                    setButtonDisabled(false)
-                }, 2000);
-            }            
+            setUpdate(!update)
+            setTimeout(() => {
+                setSubmitComplete(false)
+                if(submitCount - cookies[id] > 0 || submitCount*1 === 0) setButtonDisabled(false)
+            }, 2000);
+            // if(!data.overlap){
+            //     setCookie(id, "test", {path:'/'})
+            //     setTimeout(() => {
+            //         setSubmitComplete(false)
+            //     }, 2000);
+            // }
+            // else{
+            //     setTimeout(() => {
+            //         setSubmitComplete(false)
+            //         setButtonDisabled(false)
+            //     }, 2000);
+            // }            
         })
         socket.emit("getProjectById", {id: id})
 
@@ -73,7 +94,16 @@ const Content = () => {
             socket.off("submitAnswer")
         }
         // eslint-disable-next-line
-    }, []);
+    }, [update]);
+
+    useEffect(() => {
+        setInputCount(project.data?.inputCount)
+        setSubmitCount(project.data?.submitCount*1)
+    }, [project]);
+
+    // useEffect(() => {
+    //     if(update){}
+    // }, [update]);
 
     return(
         <>
@@ -98,9 +128,9 @@ const Content = () => {
                                         <NeumorphismTextField 
                                             fullWidth
                                             InputProps={{
-                                                endAdornment: <InputAdornment position="end">{10 - text.length}</InputAdornment>,
+                                                endAdornment: <InputAdornment position="end">{inputCount - text.length}</InputAdornment>,
                                             }}
-                                            placeholder="단어를 입력해주세요(10자 이내)"
+                                            placeholder={`단어를 입력해주세요(${inputCount}자 이내)`}
                                             sx={{mx:1}}
                                             value={text}
                                             onChange={handleText}
@@ -108,6 +138,9 @@ const Content = () => {
                                         {/* <IconButton size="large" sx={{alignItems:"center"}}>
                                             <AddIcon/>
                                         </IconButton> */}
+                                    </Grid>
+                                    <Grid item xs={12} sx={{display:"flex", justifyContent:"center"}}>
+                                        <Typography>제출 가능 횟수 : {submitCount*1 !== 0 ? (submitCount - (cookies[id]?cookies[id]*1:0)>=0 ? submitCount - (cookies[id]?cookies[id]*1:0) : 0) : ("무제한")}</Typography>
                                     </Grid>
                                     <Grid item xs={12} sx={{display:isSubmitted?"flex":"none", justifyContent:"center"}}>
                                         <Typography color="error">이미 제출하셨습니다</Typography>
