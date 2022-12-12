@@ -22,6 +22,7 @@ const Content = () => {
     const id = useLocation().pathname.split('/')[3]
 
     const [project, setProject] = useState({});
+    const [name, setName] = useState("");
     const [selectedValue, setSelectedValue] = useState("default");
     const [question, setQuestion] = useState("");
     const [overlap, setOverlap] = useState(false);
@@ -39,10 +40,12 @@ const Content = () => {
         setOverlap(!overlap)
     }
     const modifyProject = () => {
-        setProject({...project, type:selectedValue, data: {question: question, overlap: overlap}})
+        setProject({...project, type:selectedValue, name:name, data: {question: question, overlap: overlap}})
         
-        socket.emit("modifyProject", {...project, type:selectedValue, data: {question: question, overlap: overlap}})
-
+        socket.emit("modifyProject", {...project, name:name, type:selectedValue, data: {question: question, overlap: overlap}})
+    }
+    const handleName = (e) => {
+        setName(e.target.value)
     }
 
     useEffect(() => {
@@ -78,6 +81,7 @@ const Content = () => {
             setSelectedValue(project.type)
             setQuestion(project.data.question)
             setOverlap(project.data.overlap)
+            setName(project.name)
         }
     }, [project]);
     return(
@@ -90,7 +94,7 @@ const Content = () => {
                         </IconButton>
                     </Tooltip>
                     <Box sx={{width:"100%", mt:1}}>
-                        <NeumorphismTextField sx={{fontSize:"40px", mb:1, width:"50%"}} value={project.name?project.name:"제목"}/>
+                        <NeumorphismTextField sx={{fontSize:"40px", mb:1, width:"50%"}} value={name} placeholder="제목" onChange={handleName}/>
                     </Box>
                 </Box>
 
