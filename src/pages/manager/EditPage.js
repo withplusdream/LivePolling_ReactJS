@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { 
-    Box, Tooltip, Typography, Grid, Select, FormControl, MenuItem, ListItemIcon, ListItemText, Checkbox  
+    Box, Tooltip, Typography, Grid, Select, FormControl, MenuItem, ListItemIcon, ListItemText, Checkbox, InputAdornment
 } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -45,7 +45,11 @@ const Content = () => {
         socket.emit("modifyProject", {...project, name:name, type:selectedValue, data: {question: question, overlap: overlap}})
     }
     const handleName = (e) => {
-        setName(e.target.value)
+        if(e.target.value.length > 25){
+            setName(e.target.value.slice(0,25))
+        }else{
+            setName(e.target.value)
+        }
     }
 
     useEffect(() => {
@@ -94,7 +98,12 @@ const Content = () => {
                         </IconButton>
                     </Tooltip>
                     <Box sx={{width:"100%", mt:1}}>
-                        <NeumorphismTextField sx={{fontSize:"40px", mb:1, width:"50%"}} value={name} placeholder="제목" onChange={handleName}/>
+                        <NeumorphismTextField 
+                            sx={{fontSize:"40px", mb:1, width:"50%"}} value={name} placeholder="제목" onChange={handleName}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">{25 - name.length}</InputAdornment>,
+                            }}
+                        />
                     </Box>
                 </Box>
 
