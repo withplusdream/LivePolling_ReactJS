@@ -62,6 +62,7 @@ const Content = () => {
 
     useEffect(() => {
         socket.on("getProject", (data) => {
+            console.log(data);
             if(!data){
                 alert("페이지에 대한 정보가 없습니다.")
                 navigate('/manager')
@@ -93,10 +94,10 @@ const Content = () => {
             setSelectedValue(project.type)
             setQuestion(project.data.question)
             setOverlap(project.data.overlap)
-            setName(project.name)
             setInputCount(project.data.inputCount)
             setSubmitCount(project.data.submitCount)
         }
+        setName(project.name)
     }, [project]);
 
     useEffect(() => {
@@ -115,9 +116,9 @@ const Content = () => {
                     </Tooltip>
                     <Box sx={{width:"100%", mt:1}}>
                         <NeumorphismTextField 
-                            sx={{fontSize:"40px", mb:1, width:"50%"}} value={name} placeholder="제목" onChange={handleName}
+                            sx={{fontSize:"40px", mb:1, width:"50%"}} value={name||""} placeholder="제목" onChange={handleName}
                             InputProps={{
-                                endAdornment: <InputAdornment position="end">{25 - name.length}</InputAdornment>,
+                                endAdornment: <InputAdornment position="end">{25 - name?.length}</InputAdornment>,
                             }}
                         />
                     </Box>
