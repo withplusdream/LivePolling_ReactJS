@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Typography, Tooltip } from '@mui/material';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -9,10 +10,11 @@ import { IconButton } from './Button';
 
 const Header = () => {
     const [, , removeCookie] = useCookies()
+    const navigate = useNavigate()
 
     const logout = () => {
-        removeCookie('auth')
-        window.location.reload()
+        removeCookie('auth', {path:'/'})
+        navigate('/login')
     }
 
     return(
