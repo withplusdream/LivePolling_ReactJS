@@ -1,6 +1,9 @@
-import io from 'socket.io-client'
+import io from "socket.io-client";
 
-// withplus : 192.168.0.60
-// aws : https://polls.wplusedu.co.kr
+const environment = process.env.NODE_ENV;
 
-export const socket = io.connect("http://192.168.0.60", { cors: { origin: "*", reconnection: true } });
+// * 현재 연결된 와이파이 ip로 설정
+export const socket = io.connect(
+  environment === "development" ? "http://192.168.0.50" : "https://polls.wplusedu.co.kr",
+  { cors: { origin: "*", reconnection: true } }
+);

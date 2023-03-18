@@ -1,27 +1,41 @@
-*{
-    -ms-overflow-style: none;
+* {
+  -ms-overflow-style: none;
 }
+/* ::-webkit-scrollbar {
+  display: none;
+} */
 ::-webkit-scrollbar {
-    display: none;
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #2f3542;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+  background-color: #80808050;
+  /* border-radius: 10px; */
+  /* box-shadow: inset 0px 0px 5px white; */
 }
 
 @font-face {
-    font-family: 'BMJUA';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "BMJUA";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'Noto Sans KR', sans-serif;
-    src: url('https://fonts.googleapis.com/earlyaccess/notosanskr.css');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Noto Sans KR", sans-serif;
+  src: url("https://fonts.googleapis.com/earlyaccess/notosanskr.css");
+  font-weight: normal;
+  font-style: normal;
 }
 /* format('woff'); */
 
-a:visited { color:blue; text-decoration: none; }
-
+a:visited {
+  color: blue;
+  text-decoration: none;
+}
 
 .MuiDataGrid-root .MuiDataGrid-columnHeader:focus,
 .MuiDataGrid-root .MuiDataGrid-cell:focus {
@@ -31,7 +45,7 @@ a:visited { color:blue; text-decoration: none; }
   outline: none !important;
 }
 
-fieldset{
-    border: none !important;
-    outline: none !important;
+fieldset {
+  border: none !important;
+  outline: none !important;
 }

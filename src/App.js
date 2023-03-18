@@ -11,11 +11,13 @@ import { createTheme, ThemeProvider  } from '@mui/material/styles';
 
 import AccessCodePage from './pages/user/AccessCodePage';
 import LoginPage from './pages/manager/LoginPage';
-import InputPage from './pages/user/InputPage';
+import WordCloudInput from './pages/user/WordCloudInput';
+import ChoiceInput from './pages/user/ChoiceInput';
 import PollListPage from './pages/manager/PollListPage';
 import EditPage from './pages/manager/EditPage';
-import SlidePage from './pages/manager/SlidePage';
+import WordCloudPage from './pages/manager/WordCloudPage';
 import Auth from './utils/auth'
+import ChoicePage from './pages/manager/ChoicePage';
 
 const setScreenSize = () => {
   let vh = window.innerHeight * 0.01;
@@ -44,13 +46,15 @@ const App = () => {
         <Routes>
           {/* User Router */}
           <Route exact path="/" element={<AccessCodePage/>} />
-          <Route exact path="/:id" element={<InputPage/>} />
+          <Route exact path="/app/wordcloud/:id" element={<WordCloudInput/>} />
+          <Route exact path="/app/choice/:id" element={<ChoiceInput/>} />
 
           {/* Manager Router */}
           <Route exact path="/login" element={ <Auth Component={LoginPage} isAuthRequired={false}/> } />
           <Route exact path="/manager" element={ <Auth Component={PollListPage} isAuthRequired={true}/>} />
           <Route exact path="/manager/edit/:id" element={ <Auth Component={EditPage} isAuthRequired={true}/>} />
-          <Route exact path="/manager/app/:id" element={ <Auth Component={SlidePage} isAuthRequired={true}/>} />
+          <Route exact path="/manager/app/wordcloud/:id" element={ <Auth Component={WordCloudPage} isAuthRequired={true}/>} />
+          <Route exact path="/manager/app/choice/:id" element={ <Auth Component={ChoicePage} isAuthRequired={true}/>} />
         </Routes>
       </Router>
     </ThemeProvider>
